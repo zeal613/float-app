@@ -1,0 +1,209 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  background: #0A0A0A;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #FFFFFF;
+  background: #0A0A0A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.008); }
+}
+@keyframes drawArc {
+  from { stroke-dashoffset: 283; }
+  to { stroke-dashoffset: var(--target, 71); }
+}
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  60% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
+.animate-sheet { animation: slideUpSheet 0.38s cubic-bezier(0.32,0.72,0,1) forwards; }
+.animate-count { animation: countUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+.animate-breathe { animation: breathe 4s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-celebrate { animation: celebrate 0.5s ease-out; }
+
+.stagger-1 { animation: staggerIn 0.4s 0.05s cubic-bezier(0.16,1,0.3,1) both; }
+.stagger-2 { animation: staggerIn 0.4s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+.stagger-3 { animation: staggerIn 0.4s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
+.stagger-4 { animation: staggerIn 0.4s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+.stagger-5 { animation: staggerIn 0.4s 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ── Shimmer skeleton ── */
+.shimmer {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 10px;
+}
+
+/* ── Cards ── */
+.glass {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.glass-high {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── Buttons ── */
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  border: none; cursor: pointer; font-family: inherit;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  -webkit-user-select: none; user-select: none;
+}
+.btn:active { transform: scale(0.96); }
+
+.btn-white {
+  background: #FFFFFF; color: #000000;
+  border-radius: 16px; height: 56px; width: 100%;
+  font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+}
+.btn-white:active { opacity: 0.88; }
+
+.btn-ghost {
+  background: transparent; color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px; height: 56px; width: 100%;
+  font-size: 16px; font-weight: 600;
+}
+
+.btn-sm {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #FFFFFF; border-radius: 10px;
+  height: 36px; padding: 0 14px;
+  font-size: 13px; font-weight: 600;
+}
+
+/* ── Inputs ── */
+.input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 16px 18px;
+  color: #FFFFFF; font-size: 16px; width: 100%;
+  outline: none; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.input:focus { border-color: rgba(255,255,255,0.35); }
+.input::placeholder { color: rgba(255,255,255,0.28); }
+
+/* ── Bottom sheet ── */
+.sheet-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200; backdrop-filter: blur(4px);
+}
+.sheet {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #131313;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  z-index: 201; padding: 0 24px 40px;
+  max-height: 92vh; overflow-y: auto;
+  animation: slideUpSheet 0.38s cubic-bezier(0.32,0.72,0,1) forwards;
+}
+.drag-handle {
+  width: 36px; height: 4px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  margin: 12px auto 20px;
+}
+
+/* ── Nav ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(10,10,10,0.92);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex; align-items: center;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 100;
+}
+
+/* ── Text helpers ── */
+.text-muted { color: rgba(255,255,255,0.45); }
+.text-dim { color: rgba(255,255,255,0.28); }
+.section-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.8px; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  border: none; margin: 0;
+}
+
+/* ── Safe area ── */
+.pb-safe { padding-bottom: calc(64px + env(safe-area-inset-bottom, 16px) + 16px); }
