@@ -10,24 +10,21 @@ export function AuthProvider({ children }) {
 
   async function fetchOrCreateProfile(u) {
     try {
-      // Try to get existing profile
-      let { data, error } = await supabase
+      let { data } = await supabase
         .from('profiles').select('*').eq('id', u.id).single()
 
-      // If not found, create it
-      if (error?.code === 'PGRST116' || !data) {
-        const { data: created, error: createError } = await supabase
+      if (!data) {
+        const { data: created } = await supabase
           .from('profiles')
           .upsert({
             id: u.id,
             email: u.email,
             full_name: u.user_metadata?.full_name || 'Friend',
-            onboarding_completed: false
+            onboarding_completed: false,
+            payday_date: 25,
+            emergency_reserve_target: 5000
           }, { onConflict: 'id' })
-          .select('*')
-          .single()
-
-        if (createError) console.error('Create profile error:', createError)
+          .select('*').single()
         data = created
       }
 
@@ -40,20 +37,12 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 6000)
-
+    // Persist session across tab switches
     supabase.auth.getSession().then(({ data: { session } }) => {
       const u = session?.user ?? null
       setUser(u)
-      if (u) {
-        fetchOrCreateProfile(u).finally(() => {
-          clearTimeout(timer)
-          setLoading(false)
-        })
-      } else {
-        clearTimeout(timer)
-        setLoading(false)
-      }
+      if (u) fetchOrCreateProfile(u)
+      else setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -61,15 +50,16 @@ export function AuthProvider({ children }) {
         const u = session?.user ?? null
         setUser(u)
         if (u) {
-          setLoading(true)
-          fetchOrCreateProfile(u).finally(() => setLoading(false))
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            fetchOrCreateProfile(u)
+          }
         } else {
           setProfile(null)
           setLoading(false)
         }
       }
     )
-    return () => { subscription.unsubscribe(); clearTimeout(timer) }
+    return () => subscription.unsubscribe()
   }, [])
 
   const signUp = (email, pass, name, phone) =>
@@ -87,25 +77,18 @@ export function AuthProvider({ children }) {
     setProfile(null)
   }
 
-  // THIS IS THE FIX — upsert instead of update so it always works
   const updateProfile = async (updates) => {
     if (!user) return null
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .upsert({
         id: user.id,
         email: user.email,
-        full_name: user.user_metadata?.full_name || 'Friend',
+        full_name: user.user_metadata?.full_name || profile?.full_name || 'Friend',
         ...updates,
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' })
-      .select('*')
-      .single()
-
-    if (error) {
-      console.error('updateProfile error:', error)
-      return null
-    }
+      .select('*').single()
     if (data) setProfile(data)
     return data
   }
